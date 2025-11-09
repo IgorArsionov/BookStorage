@@ -1,8 +1,8 @@
-package com.bookstore.service.impl;
+package com.bookstorage.service.impl;
 
-import com.bookstore.model.Book;
-import com.bookstore.repository.BookRepository;
-import com.bookstore.service.BookService;
+import com.bookstorage.model.Book;
+import com.bookstorage.repository.BookRepository;
+import com.bookstorage.service.BookService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

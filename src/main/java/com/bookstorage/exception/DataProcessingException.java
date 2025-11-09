@@ -1,4 +1,4 @@
-package com.bookstore.exception;
+package com.bookstorage.exception;
 
 public class DataProcessingException extends RuntimeException {
     public DataProcessingException(String message, Throwable cause) {

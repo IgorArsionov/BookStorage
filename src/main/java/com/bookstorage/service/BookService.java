@@ -1,6 +1,6 @@
-package com.bookstore.service;
+package com.bookstorage.service;
 
-import com.bookstore.model.Book;
+import com.bookstorage.model.Book;
 import java.util.List;
 
 public interface BookService {
