@@ -1,6 +1,7 @@
 package com.bookstorage.repository.impl;
 
 import com.bookstorage.exception.DataProcessingException;
+import com.bookstorage.exception.EntityNotFoundException;
 import com.bookstorage.model.Book;
 import com.bookstorage.repository.BookRepository;
 import java.util.List;
@@ -45,7 +46,7 @@ public class BookRepositoryImpl implements BookRepository {
         try (Session session = sessionFactory.openSession()) {
             return session.createQuery("from Book", Book.class).list();
         } catch (Exception e) {
-            throw new DataProcessingException("Can't find all books", e);
+            throw new EntityNotFoundException("Can't find all books", e);
         }
     }
 
@@ -55,6 +56,8 @@ public class BookRepositoryImpl implements BookRepository {
             Query<Book> bookQuery = session.createQuery("from Book where id=:id", Book.class);
             bookQuery.setParameter("id", id);
             return bookQuery.uniqueResultOptional();
+        } catch (Exception e) {
+            throw new EntityNotFoundException("Can't find Book with id: " + id, e);
         }
     }
 }
