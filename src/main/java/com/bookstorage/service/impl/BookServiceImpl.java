@@ -2,7 +2,7 @@ package com.bookstorage.service.impl;
 
 import com.bookstorage.dto.BookDto;
 import com.bookstorage.dto.CreateBookRequestDto;
-import com.bookstorage.exception.DataProcessingException;
+import com.bookstorage.exception.EntityNotFoundException;
 import com.bookstorage.mapper.BookMapper;
 import com.bookstorage.model.Book;
 import com.bookstorage.repository.BookRepository;
@@ -34,7 +34,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookDto findById(Long id) {
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new DataProcessingException("Can't find Book with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Can't find Book with id: " + id));
         return bookMapper.toDto(book);
     }
 }
