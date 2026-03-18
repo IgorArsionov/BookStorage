@@ -2,13 +2,14 @@ package com.bookstorage.service;
 
 import com.bookstorage.dto.BookDto;
 import com.bookstorage.dto.CreateBookRequestDto;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface BookService {
 
     BookDto save(CreateBookRequestDto requestDto);
 
-    List<BookDto> findAll();
+    Page<BookDto> findAll(Pageable pageable);
 
     BookDto findById(Long id);
 
