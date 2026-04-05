@@ -1,7 +1,7 @@
 package com.bookstorage.controller;
 
-import com.bookstorage.dto.BookDto;
-import com.bookstorage.dto.CreateBookRequestDto;
+import com.bookstorage.dto.book.BookCreateRequestDto;
+import com.bookstorage.dto.book.BookResponseDto;
 import com.bookstorage.service.BookService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,27 +30,27 @@ public class BookController {
 
     @Operation(summary = "Get all books", description = "Retrieve a list of all books")
     @GetMapping
-    public Page<BookDto> getBooks(Pageable pageable) {
+    public Page<BookResponseDto> getBooks(Pageable pageable) {
         return bookService.findAll(pageable);
     }
 
     @Operation(summary = "Get book by ID", description = "Retrieve a book by its ID")
     @GetMapping("/{id}")
-    public BookDto getBookById(@PathVariable Long id) {
+    public BookResponseDto getBookById(@PathVariable Long id) {
         return bookService.findById(id);
     }
 
     @Operation(summary = "Create a new book", description = "Create a new book")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public BookDto createBook(@RequestBody @Valid CreateBookRequestDto requestDto) {
+    public BookResponseDto createBook(@RequestBody @Valid BookCreateRequestDto requestDto) {
         return bookService.save(requestDto);
     }
 
     @Operation(summary = "Update an existing book", description = "Update an existing book")
     @PutMapping("/{id}")
-    public BookDto updateBook(
-            @PathVariable Long id, @RequestBody @Valid CreateBookRequestDto requestDto
+    public BookResponseDto updateBook(
+            @PathVariable Long id, @RequestBody @Valid BookCreateRequestDto requestDto
     ) {
         return bookService.update(id, requestDto);
     }

@@ -1,4 +1,4 @@
-package com.bookstorage.dto;
+package com.bookstorage.dto.book;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import lombok.Data;
 
 @Data
-public class CreateBookRequestDto {
+public class BookCreateRequestDto {
     @NotBlank
     private String title;
     @NotBlank
