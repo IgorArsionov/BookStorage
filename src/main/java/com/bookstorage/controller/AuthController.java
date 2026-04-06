@@ -1,11 +1,11 @@
 package com.bookstorage.controller;
 
-import com.bookstorage.dto.user.UserLoginRequestDto;
-import com.bookstorage.dto.user.UserRegisterOrUpdateDto;
+import com.bookstorage.dto.user.UserRegistrationRequestDto;
 import com.bookstorage.dto.user.UserResponseDto;
 import com.bookstorage.exception.RegistrationException;
-import com.bookstorage.security.AuthenticationService;
 import com.bookstorage.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,23 +15,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Auth API", description = "API for managing authentication")
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    private final AuthenticationService authService;
     private final UserService userService;
 
-    @PostMapping("/login")
-    public boolean login(@RequestBody UserLoginRequestDto userLoginRequestDto) {
-        return authService.authenticate(userLoginRequestDto);
-    }
-
+    @Operation(summary = "Register new user", description = "Register new user")
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public UserResponseDto register(
-            @RequestBody @Valid UserRegisterOrUpdateDto userCreateRequestDto
+            @RequestBody @Valid UserRegistrationRequestDto userRegistrationRequestDto
     ) throws RegistrationException {
-        return userService.register(userCreateRequestDto);
+        return userService.register(userRegistrationRequestDto);
     }
 }

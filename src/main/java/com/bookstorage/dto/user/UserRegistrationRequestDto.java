@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @FieldMatch(first = "password", second = "confirmPassword", message = "Passwords do not match")
-public class UserRegisterOrUpdateDto {
+public class UserRegistrationRequestDto {
     @NotBlank
     private String email;
     @NotBlank
