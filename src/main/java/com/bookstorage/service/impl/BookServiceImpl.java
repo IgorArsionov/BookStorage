@@ -1,7 +1,7 @@
 package com.bookstorage.service.impl;
 
-import com.bookstorage.dto.BookDto;
-import com.bookstorage.dto.CreateBookRequestDto;
+import com.bookstorage.dto.book.BookCreateRequestDto;
+import com.bookstorage.dto.book.BookResponseDto;
 import com.bookstorage.exception.EntityNotFoundException;
 import com.bookstorage.mapper.BookMapper;
 import com.bookstorage.model.Book;
@@ -20,26 +20,26 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
 
     @Override
-    public BookDto save(CreateBookRequestDto requestDto) {
+    public BookResponseDto save(BookCreateRequestDto requestDto) {
         Book book = bookMapper.toEntity(requestDto);
         return bookMapper.toDto(bookRepository.save(book));
     }
 
     @Override
-    public Page<BookDto> findAll(Pageable pageable) {
+    public Page<BookResponseDto> findAll(Pageable pageable) {
         return bookRepository.findAll(pageable)
                 .map(bookMapper::toDto);
     }
 
     @Override
-    public BookDto findById(Long id) {
+    public BookResponseDto findById(Long id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Can't find Book with id: " + id));
         return bookMapper.toDto(book);
     }
 
     @Override
-    public BookDto update(Long id, CreateBookRequestDto requestDto) {
+    public BookResponseDto update(Long id, BookCreateRequestDto requestDto) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(
                         () -> new EntityNotFoundException("Can't find Book by id: " + id)
