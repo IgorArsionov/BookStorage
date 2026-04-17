@@ -4,7 +4,6 @@ import com.bookstorage.dto.user.UserRegistrationRequestDto;
 import com.bookstorage.dto.user.UserResponseDto;
 import com.bookstorage.exception.EntityNotFoundException;
 import com.bookstorage.exception.RegistrationException;
-import com.bookstorage.exception.RoleNotFoundException;
 import com.bookstorage.mapper.UserMapper;
 import com.bookstorage.model.Role;
 import com.bookstorage.model.RoleName;
@@ -54,7 +53,9 @@ public class UserServiceImpl implements UserService {
         }
         User user = userMapper.toEntity(requestDto);
         Role role = repository.findByName(RoleName.USER)
-                .orElseThrow(() -> new RoleNotFoundException("Default role USER not found"));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Default role " + RoleName.USER + " not found"
+                ));
         user.setRoles(Set.of(role));
         return userMapper.toDto(userRepository.save(user));
     }
