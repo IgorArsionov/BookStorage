@@ -1,0 +1,23 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-admin-user
+      author: IgorArsionov
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: email
+                  value: admin@gmail.com
+              - column:
+                  name: password
+                  value: $2a$10$Dow1qF0k8GxH5Yz5X6l1Z.X7XJ6sZkZJjZkZkZkZkZkZkZkZkZkZk
+              - column:
+                  name: first_name
+                  value: Admin
+              - column:
+                  name: last_name
+                  value: Admin
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
