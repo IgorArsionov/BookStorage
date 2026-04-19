@@ -5,16 +5,24 @@ import com.bookstorage.dto.user.UserResponseDto;
 import com.bookstorage.exception.EntityNotFoundException;
 import com.bookstorage.exception.RegistrationException;
 import com.bookstorage.mapper.UserMapper;
+import com.bookstorage.model.Role;
+import com.bookstorage.model.RoleName;
+import com.bookstorage.model.User;
+import com.bookstorage.repository.RoleRepository;
 import com.bookstorage.repository.UserRepository;
 import com.bookstorage.service.UserService;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final RoleRepository repository;
 
     @Override
     public UserResponseDto findById(Long id) {
@@ -45,6 +53,12 @@ public class UserServiceImpl implements UserService {
                     "User with email: " + requestDto.getEmail() + " already exists"
             );
         }
-        return userMapper.toDto(userRepository.save(userMapper.toEntity(requestDto)));
+        User user = userMapper.toEntity(requestDto);
+        Role role = repository.findByName(RoleName.USER)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Default role " + RoleName.USER + " not found"
+                ));
+        user.setRoles(Set.of(role));
+        return userMapper.toDto(userRepository.save(user));
     }
 }
