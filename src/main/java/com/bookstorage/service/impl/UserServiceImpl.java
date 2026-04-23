@@ -13,6 +13,7 @@ import com.bookstorage.repository.UserRepository;
 import com.bookstorage.service.UserService;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +24,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final RoleRepository repository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserResponseDto findById(Long id) {
@@ -54,6 +56,7 @@ public class UserServiceImpl implements UserService {
             );
         }
         User user = userMapper.toEntity(requestDto);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         Role role = repository.findByName(RoleName.USER)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Default role " + RoleName.USER + " not found"
