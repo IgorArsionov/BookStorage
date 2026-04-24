@@ -1,6 +1,7 @@
 package com.bookstorage.controller;
 
 import com.bookstorage.dto.book.BookCreateRequestDto;
+import com.bookstorage.dto.book.BookDtoWithoutCategoryIds;
 import com.bookstorage.dto.book.BookResponseDto;
 import com.bookstorage.service.BookService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,7 +40,7 @@ public class BookController {
     @Operation(summary = "Get book by ID", description = "Retrieve a book by its ID")
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public BookResponseDto getBookById(@PathVariable Long id) {
+    public BookDtoWithoutCategoryIds getBookById(@PathVariable Long id) {
         return bookService.findById(id);
     }
 

@@ -1,0 +1,18 @@
+package com.bookstorage.service;
+
+import com.bookstorage.dto.category.CategoryRequestDto;
+import com.bookstorage.dto.category.CategoryResponseDto;
+import java.util.List;
+
+public interface CategoryService {
+
+    List<CategoryResponseDto> findAll();
+
+    CategoryResponseDto getById(Long id);
+
+    CategoryResponseDto save(CategoryRequestDto requestDto);
+
+    CategoryResponseDto update(Long id, CategoryRequestDto requestDto);
+
+    void deleteById(Long id);
+}
