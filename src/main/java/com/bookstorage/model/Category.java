@@ -23,7 +23,7 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JoinColumn(nullable = false)
+    @JoinColumn(nullable = false, unique = true)
     private String name;
     private String description;
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
