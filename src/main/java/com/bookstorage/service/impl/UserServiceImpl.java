@@ -7,8 +7,10 @@ import com.bookstorage.exception.RegistrationException;
 import com.bookstorage.mapper.UserMapper;
 import com.bookstorage.model.Role;
 import com.bookstorage.model.RoleName;
+import com.bookstorage.model.ShoppingCart;
 import com.bookstorage.model.User;
 import com.bookstorage.repository.RoleRepository;
+import com.bookstorage.repository.ShoppingCartRepository;
 import com.bookstorage.repository.UserRepository;
 import com.bookstorage.service.UserService;
 import java.util.Set;
@@ -25,6 +27,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final RoleRepository repository;
     private final PasswordEncoder passwordEncoder;
+    private final ShoppingCartRepository shoppingCartRepository;
 
     @Override
     public UserResponseDto findById(Long id) {
@@ -55,13 +58,23 @@ public class UserServiceImpl implements UserService {
                     "User with email: " + requestDto.getEmail() + " already exists"
             );
         }
+
         User user = userMapper.toEntity(requestDto);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+
         Role role = repository.findByName(RoleName.USER)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Default role " + RoleName.USER + " not found"
                 ));
+
         user.setRoles(Set.of(role));
-        return userMapper.toDto(userRepository.save(user));
+
+        User userFromDb = userRepository.save(user);
+
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setUser(user);
+        shoppingCartRepository.save(shoppingCart);
+
+        return userMapper.toDto(userFromDb);
     }
 }
