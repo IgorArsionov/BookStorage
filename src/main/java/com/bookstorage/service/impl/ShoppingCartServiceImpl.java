@@ -67,12 +67,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
         ShoppingCart shoppingCartByUserId = getShoppingCartByUserId();
 
-        CartItem cartItem = cartItemRepository
-                .findByIdAndShoppingCartId(id, shoppingCartByUserId.getId())
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "Can't find cartItem by id: " + id
-                                + " in ShoppingCart by id: " + shoppingCartByUserId.getId()
-                ));
+        CartItem cartItem = getCartByUdAndByShoppingCartId(id, shoppingCartByUserId.getId());
 
         cartItemMapper.updateCartItem(cartItem, requestDto);
 
@@ -83,12 +78,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     public void deleteCartItem(Long id) {
 
         ShoppingCart shoppingCartByUserId = getShoppingCartByUserId();
-        CartItem cartItem = cartItemRepository
-                .findByIdAndShoppingCartId(id, shoppingCartByUserId.getId())
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "Can't find cartItem by id: " + id
-                                + " in ShoppingCart by id: " + shoppingCartByUserId.getId()
-                ));
+
+        CartItem cartItem = getCartByUdAndByShoppingCartId(id, shoppingCartByUserId.getId());
 
         cartItemRepository.deleteById(cartItem.getId());
     }
@@ -109,6 +100,15 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         return shoppingCartRepository.findByUserId(authenticationUserId)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Can't find ShoppingCart by user id: " + authenticationUserId
+                ));
+    }
+
+    private CartItem getCartByUdAndByShoppingCartId(Long id, Long shopId) {
+        return cartItemRepository
+                .findByIdAndShoppingCartId(id, shopId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Can't find cartItem by id: " + id
+                                + " in ShoppingCart by id: " + shopId
                 ));
     }
 }
