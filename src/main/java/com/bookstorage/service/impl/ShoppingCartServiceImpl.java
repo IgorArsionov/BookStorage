@@ -64,23 +64,16 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     public ShoppingCartResponseDto updateCartItem(Long id, CartItemRequestDto requestDto) {
-
         ShoppingCart shoppingCartByUserId = getShoppingCartByUserId();
-
         CartItem cartItem = getCartByIdAndByShoppingCartId(id, shoppingCartByUserId.getId());
-
         cartItemMapper.updateCartItem(cartItem, requestDto);
-
         return shoppingCartMapper.toDto(shoppingCartRepository.save(shoppingCartByUserId));
     }
 
     @Override
     public void deleteCartItem(Long id) {
-
         ShoppingCart shoppingCartByUserId = getShoppingCartByUserId();
-
         CartItem cartItem = getCartByIdAndByShoppingCartId(id, shoppingCartByUserId.getId());
-
         cartItemRepository.deleteById(cartItem.getId());
     }
 
