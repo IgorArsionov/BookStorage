@@ -67,7 +67,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
         ShoppingCart shoppingCartByUserId = getShoppingCartByUserId();
 
-        CartItem cartItem = getCartByUdAndByShoppingCartId(id, shoppingCartByUserId.getId());
+        CartItem cartItem = getCartByIdAndByShoppingCartId(id, shoppingCartByUserId.getId());
 
         cartItemMapper.updateCartItem(cartItem, requestDto);
 
@@ -79,7 +79,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
         ShoppingCart shoppingCartByUserId = getShoppingCartByUserId();
 
-        CartItem cartItem = getCartByUdAndByShoppingCartId(id, shoppingCartByUserId.getId());
+        CartItem cartItem = getCartByIdAndByShoppingCartId(id, shoppingCartByUserId.getId());
 
         cartItemRepository.deleteById(cartItem.getId());
     }
@@ -103,7 +103,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                 ));
     }
 
-    private CartItem getCartByUdAndByShoppingCartId(Long id, Long shopId) {
+    private CartItem getCartByIdAndByShoppingCartId(Long id, Long shopId) {
         return cartItemRepository
                 .findByIdAndShoppingCartId(id, shopId)
                 .orElseThrow(() -> new EntityNotFoundException(
