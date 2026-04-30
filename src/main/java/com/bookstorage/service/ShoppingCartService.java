@@ -1,16 +1,18 @@
 package com.bookstorage.service;
 
 import com.bookstorage.dto.cartitem.CartItemRequestDto;
-import com.bookstorage.dto.cartitem.CartItemResponseDto;
 import com.bookstorage.dto.shoppingcart.ShoppingCartResponseDto;
+import com.bookstorage.model.User;
 
 public interface ShoppingCartService {
 
-    CartItemResponseDto addBook(CartItemRequestDto requestDto);
+    ShoppingCartResponseDto addBook(CartItemRequestDto requestDto);
 
     ShoppingCartResponseDto getShoppingCartByUser();
 
-    CartItemResponseDto updateCartItem(Long id, CartItemRequestDto requestDto);
+    ShoppingCartResponseDto updateCartItem(Long id, CartItemRequestDto requestDto);
 
     void deleteCartItem(Long id);
+
+    void addUserToShopCart(User user);
 }

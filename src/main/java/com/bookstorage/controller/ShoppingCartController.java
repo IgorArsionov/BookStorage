@@ -1,7 +1,6 @@
 package com.bookstorage.controller;
 
 import com.bookstorage.dto.cartitem.CartItemRequestDto;
-import com.bookstorage.dto.cartitem.CartItemResponseDto;
 import com.bookstorage.dto.shoppingcart.ShoppingCartResponseDto;
 import com.bookstorage.service.ShoppingCartService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,7 +31,7 @@ public class ShoppingCartController {
     )
     @PostMapping
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public CartItemResponseDto addBook(@RequestBody @Valid CartItemRequestDto requestDto) {
+    public ShoppingCartResponseDto addBook(@RequestBody @Valid CartItemRequestDto requestDto) {
         return shoppingCartService.addBook(requestDto);
     }
 
@@ -52,9 +51,9 @@ public class ShoppingCartController {
     )
     @PutMapping("/items/{cartItemId}")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public CartItemResponseDto updateCartItem(
+    public ShoppingCartResponseDto updateCartItem(
             @PathVariable Long cartItemId,
-            @RequestBody CartItemRequestDto requestDto
+            @RequestBody @Valid CartItemRequestDto requestDto
     ) {
         return shoppingCartService.updateCartItem(cartItemId, requestDto);
     }

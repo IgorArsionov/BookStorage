@@ -7,11 +7,10 @@ import com.bookstorage.exception.RegistrationException;
 import com.bookstorage.mapper.UserMapper;
 import com.bookstorage.model.Role;
 import com.bookstorage.model.RoleName;
-import com.bookstorage.model.ShoppingCart;
 import com.bookstorage.model.User;
 import com.bookstorage.repository.RoleRepository;
-import com.bookstorage.repository.ShoppingCartRepository;
 import com.bookstorage.repository.UserRepository;
+import com.bookstorage.service.ShoppingCartService;
 import com.bookstorage.service.UserService;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +26,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final RoleRepository repository;
     private final PasswordEncoder passwordEncoder;
-    private final ShoppingCartRepository shoppingCartRepository;
+    private final ShoppingCartService shoppingCartService;
 
     @Override
     public UserResponseDto findById(Long id) {
@@ -69,12 +68,10 @@ public class UserServiceImpl implements UserService {
 
         user.setRoles(Set.of(role));
 
-        User userFromDb = userRepository.save(user);
+        userRepository.save(user);
 
-        ShoppingCart shoppingCart = new ShoppingCart();
-        shoppingCart.setUser(user);
-        shoppingCartRepository.save(shoppingCart);
+        shoppingCartService.addUserToShopCart(user);
 
-        return userMapper.toDto(userFromDb);
+        return userMapper.toDto(user);
     }
 }
