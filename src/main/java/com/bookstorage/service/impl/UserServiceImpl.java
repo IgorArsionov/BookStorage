@@ -10,6 +10,7 @@ import com.bookstorage.model.RoleName;
 import com.bookstorage.model.User;
 import com.bookstorage.repository.RoleRepository;
 import com.bookstorage.repository.UserRepository;
+import com.bookstorage.service.ShoppingCartService;
 import com.bookstorage.service.UserService;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final RoleRepository repository;
     private final PasswordEncoder passwordEncoder;
+    private final ShoppingCartService shoppingCartService;
 
     @Override
     public UserResponseDto findById(Long id) {
@@ -55,13 +57,18 @@ public class UserServiceImpl implements UserService {
                     "User with email: " + requestDto.getEmail() + " already exists"
             );
         }
+
         User user = userMapper.toEntity(requestDto);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+
         Role role = repository.findByName(RoleName.USER)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Default role " + RoleName.USER + " not found"
                 ));
+
         user.setRoles(Set.of(role));
-        return userMapper.toDto(userRepository.save(user));
+        userRepository.save(user);
+        shoppingCartService.addUserToShopCart(user);
+        return userMapper.toDto(user);
     }
 }
