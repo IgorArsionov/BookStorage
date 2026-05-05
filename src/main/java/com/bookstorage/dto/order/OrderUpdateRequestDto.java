@@ -5,6 +5,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class OrderPatchRequestDto {
+public class OrderUpdateRequestDto {
     private String status;
 }

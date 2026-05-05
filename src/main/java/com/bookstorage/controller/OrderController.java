@@ -1,12 +1,13 @@
 package com.bookstorage.controller;
 
-import com.bookstorage.dto.order.OrderPatchRequestDto;
 import com.bookstorage.dto.order.OrderRequestDto;
 import com.bookstorage.dto.order.OrderResponseDto;
+import com.bookstorage.dto.order.OrderUpdateRequestDto;
 import com.bookstorage.dto.orderitem.OrderItemResponseDto;
 import com.bookstorage.service.OrderService;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,21 +29,24 @@ public class OrderController {
     }
 
     @GetMapping
-    public List<OrderResponseDto> getOrder() {
-        return orderService.getAllOrders();
+    public Page<OrderResponseDto> getOrder(Pageable pageable) {
+        return orderService.getAllOrders(pageable);
     }
 
     @PatchMapping("/{id}")
     public OrderResponseDto updateStatus(
             @PathVariable Long id,
-            @RequestBody OrderPatchRequestDto requestDto
+            @RequestBody OrderUpdateRequestDto requestDto
     ) {
         return orderService.updateStatus(id, requestDto);
     }
 
     @GetMapping("/{orderId}/items")
-    public List<OrderItemResponseDto> getOrderItemsInOrder(@PathVariable Long orderId) {
-        return orderService.getOrderItemInOrder(orderId);
+    public Page<OrderItemResponseDto> getOrderItemsInOrder(
+            @PathVariable Long orderId,
+            Pageable pageable
+    ) {
+        return orderService.getOrderItemInOrder(orderId, pageable);
     }
 
     @GetMapping("/{orderId}/items/{itemId}")

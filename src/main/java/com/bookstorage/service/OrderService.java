@@ -1,20 +1,21 @@
 package com.bookstorage.service;
 
-import com.bookstorage.dto.order.OrderPatchRequestDto;
 import com.bookstorage.dto.order.OrderRequestDto;
 import com.bookstorage.dto.order.OrderResponseDto;
+import com.bookstorage.dto.order.OrderUpdateRequestDto;
 import com.bookstorage.dto.orderitem.OrderItemResponseDto;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface OrderService {
 
     OrderResponseDto createOrder(OrderRequestDto requestDto);
 
-    List<OrderResponseDto> getAllOrders();
+    Page<OrderResponseDto> getAllOrders(Pageable pageable);
 
-    OrderResponseDto updateStatus(Long orderId, OrderPatchRequestDto requestDto);
+    OrderResponseDto updateStatus(Long orderId, OrderUpdateRequestDto requestDto);
 
-    List<OrderItemResponseDto> getOrderItemInOrder(Long orderId);
+    Page<OrderItemResponseDto> getOrderItemInOrder(Long orderId, Pageable pageable);
 
     OrderItemResponseDto getOrderItem(Long orderId, Long itemId);
 }
