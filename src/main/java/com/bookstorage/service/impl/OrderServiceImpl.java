@@ -4,8 +4,8 @@ import com.bookstorage.dto.order.OrderRequestDto;
 import com.bookstorage.dto.order.OrderResponseDto;
 import com.bookstorage.dto.order.OrderUpdateRequestDto;
 import com.bookstorage.dto.orderitem.OrderItemResponseDto;
-import com.bookstorage.exception.EmptyShoppingCartException;
 import com.bookstorage.exception.EntityNotFoundException;
+import com.bookstorage.exception.OrderProcessingException;
 import com.bookstorage.mapper.OrderItemMapper;
 import com.bookstorage.mapper.OrderMapper;
 import com.bookstorage.model.Order;
@@ -40,7 +40,7 @@ public class OrderServiceImpl implements OrderService {
         User currentUser = getCurrentUser();
         ShoppingCart currentUserCart = getCurrentUserCart(currentUser.getId());
         if (currentUserCart.getCartItems().isEmpty()) {
-            throw new EmptyShoppingCartException("Cannot create order from empty "
+            throw new OrderProcessingException("Cannot create order from empty "
                     + "shopping cart with id: " + currentUserCart.getId());
         }
         Order order = orderMapper.toEntity(requestDto, currentUser);
