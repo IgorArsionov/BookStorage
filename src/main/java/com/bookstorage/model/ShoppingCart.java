@@ -30,7 +30,7 @@ public class ShoppingCart {
     @OneToOne
     @JoinColumn(nullable = false, name = "id")
     private User user;
-    @OneToMany(mappedBy = "shoppingCart", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "shoppingCart", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<CartItem> cartItems = new HashSet<>();
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private boolean isDeleted = false;
