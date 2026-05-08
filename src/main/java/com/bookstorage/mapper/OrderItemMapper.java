@@ -13,14 +13,10 @@ import org.mapstruct.MappingTarget;
 
 @Mapper(config = MapperConfig.class)
 public interface OrderItemMapper {
-    @Mapping(target = "orderId", source = "order.id")
     @Mapping(target = "bookId", source = "book.id")
     OrderItemResponseDto toDto(OrderItem orderItem);
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "book", source = "book")
     @Mapping(target = "price", source = "book.price")
-    @Mapping(target = "quantity", source = "quantity")
     OrderItem toOrderItem(CartItem cartItem, @Context Order order);
 
     @AfterMapping

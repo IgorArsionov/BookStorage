@@ -1,5 +1,6 @@
 package com.bookstorage.dto.order;
 
+import com.bookstorage.dto.orderitem.OrderItemResponseDto;
 import java.math.BigDecimal;
 import java.util.Set;
 import lombok.Getter;
@@ -13,6 +14,5 @@ public class OrderResponseDto {
     private String status;
     private BigDecimal total;
     private String orderDate;
-    private String shippingAddress;
-    private Set<Long> orderItemsIds;
+    private Set<OrderItemResponseDto> orderItems;
 }

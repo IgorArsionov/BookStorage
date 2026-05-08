@@ -31,7 +31,6 @@ public class OrderController {
     @PostMapping
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public OrderResponseDto createOrder(@RequestBody @Valid OrderRequestDto requestDto) {
-        System.out.println(requestDto.getShippingAddress());
         return orderService.createOrder(requestDto);
     }
 
