@@ -10,6 +10,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.util.List;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class BookRepositoryTest {
@@ -20,7 +23,7 @@ public class BookRepositoryTest {
     private CategoryRepository categoryRepository;
 
     @Test
-    void findAll_WithValidCategoriesId_ReturnsList() {
+    void findAll_WithValidCategoriesId_Ok() {
         Category category = new Category();
         category.setName("Fantastic");
         category.setDescription("fantastic movies");
@@ -37,8 +40,8 @@ public class BookRepositoryTest {
 
         List<Book> actual = bookRepository.findAllByCategoriesId(categoryId);
 
-        Assertions.assertEquals(1, actual.size());
-        Assertions.assertTrue(actual.get(0).getCategories().stream()
+        assertEquals(1, actual.size());
+        assertTrue(actual.get(0).getCategories().stream()
                 .anyMatch(c -> c.getId().equals(categoryId)));
     }
 

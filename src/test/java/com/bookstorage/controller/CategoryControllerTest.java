@@ -3,6 +3,7 @@ package com.bookstorage.controller;
 import com.bookstorage.dto.book.BookResponseDto;
 import com.bookstorage.dto.category.CategoryRequestDto;
 import com.bookstorage.dto.category.CategoryResponseDto;
+import com.bookstorage.util.TestUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -17,14 +18,16 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import org.testcontainers.shaded.org.apache.commons.lang3.builder.EqualsBuilder;
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.testcontainers.shaded.org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CategoryControllerTest {
@@ -32,6 +35,9 @@ public class CategoryControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private TestUtil testUtil;
 
     @BeforeAll
     static void beforeAll(
@@ -46,19 +52,15 @@ public class CategoryControllerTest {
     @Test
     @DisplayName("Create new category")
     @WithMockUser(username = "admin@admin.com", roles = {"ADMIN"})
-    void createCategory_NewCategory_ReturnCategory() throws Exception {
-        CategoryRequestDto requestDto = new CategoryRequestDto();
-        requestDto.setName("Test Category");
-        requestDto.setDescription("Description test category");
-
-        CategoryResponseDto expected = new CategoryResponseDto(
-                1L,
-                requestDto.getName(),
-                requestDto.getDescription()
-        );
+    @Sql(
+            scripts = "classpath:database/category/delete-category-by-name.sql",
+            executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
+    )
+    void createCategory_WithValidRequest_Ok() throws Exception {
+        CategoryRequestDto requestDto = testUtil.initCategoryRequest();
+        CategoryResponseDto expected = testUtil.initCategoryResponse(null);
 
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
-
         MvcResult result = mockMvc.perform(post("/categories")
                         .content(jsonRequest)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -71,10 +73,9 @@ public class CategoryControllerTest {
                 CategoryResponseDto.class
         );
 
-        Assertions.assertNotNull(actual);
-        Assertions.assertNotNull(actual.id());
-        Assertions.assertEquals(expected.name(), actual.name());
-        Assertions.assertEquals(expected.description(), actual.description());
+        assertNotNull(actual);
+        assertNotNull(actual.id());
+        assertTrue(reflectionEquals(expected, actual, "id"));
     }
 
     @Test
@@ -88,20 +89,20 @@ public class CategoryControllerTest {
             scripts = "classpath:database/category/delete-category-from-categories-table.sql",
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
     )
-    void getCategory_byId1_ReturnCategory() throws Exception {
-        int expected = 1;
+    void getCategory_WithValidId1_Ok() throws Exception {
+        Long categoryId = 1L;
+        CategoryResponseDto expected = testUtil.initCategoryResponse(categoryId);
 
-        MvcResult result = mockMvc.perform(get("/categories/" + expected))
+        MvcResult result = mockMvc.perform(get("/categories/" + categoryId))
                 .andExpect(status().isOk())
                 .andReturn();
-
         CategoryResponseDto actual = objectMapper.readValue(
                 result.getResponse().getContentAsString(),
                 CategoryResponseDto.class
         );
 
-        Assertions.assertNotNull(actual);
-        Assertions.assertEquals(expected, actual.id());
+        assertNotNull(actual);
+        assertTrue(reflectionEquals(expected, actual, "id"));
     }
 
     @Test
@@ -115,7 +116,7 @@ public class CategoryControllerTest {
             scripts = "classpath:database/category/delete-category-from-categories-table.sql",
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
     )
-    void deleteCategory_byId1_ReturnsStatusOk() throws Exception {
+    void deleteCategory_WithValidId1_Ok() throws Exception {
         mockMvc.perform(delete("/categories/1"))
                 .andExpect(status().isOk());
     }
@@ -133,14 +134,8 @@ public class CategoryControllerTest {
             "classpath:database/category/delete-category-from-categories-table.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
     )
-    void getBookByCategoryId_CategoryId1_ReturnListBooks() throws Exception {
-        List<BookResponseDto> expected = new ArrayList<>();
-        expected.add(new BookResponseDto().setId(1L).setTitle("Book One")
-                .setAuthor("Author A").setIsbn("111").setPrice(new BigDecimal("10.99"))
-                .setDescription("Book").setCategoryIds(Set.of(1L)));
-        expected.add(new BookResponseDto().setId(2L).setTitle("Book Two")
-                .setAuthor("Author B").setIsbn("222").setPrice(new BigDecimal("15.50"))
-                .setDescription("Book").setCategoryIds(Set.of(1L)));
+    void getBookByCategory_WithValidCategoryId1_Ok() throws Exception {
+        List<BookResponseDto> expected = testUtil.initListBookResponseDto();
 
         MvcResult result = mockMvc.perform(
                 get("/categories/1/books")
@@ -148,17 +143,15 @@ public class CategoryControllerTest {
                 )
                 .andExpect(status().isOk())
                 .andReturn();
-
         BookResponseDto[] actual = objectMapper.readValue(
                 result.getResponse().getContentAsString(),
                 BookResponseDto[].class
         );
 
-        Assertions.assertEquals(expected.size(), actual.length);
-
+        assertEquals(expected.size(), actual.length);
         for (int i = 0; i < expected.size(); i++) {
             Assertions.assertTrue(
-                    EqualsBuilder.reflectionEquals(expected.get(i), actual[i],
+                    reflectionEquals(expected.get(i), actual[i],
                             "id", "categoryIds"),
                     "Book at index " + i + " does not match"
             );
