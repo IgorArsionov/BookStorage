@@ -22,6 +22,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 import static org.testcontainers.shaded.org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,8 +47,8 @@ public class CategoryServiceTest {
 
         CategoryResponseDto expected = testUtil.initCategoryResponse(categoryId);
 
-        Mockito.when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(category));
-        Mockito.when(categoryMapper.toDto(category)).thenReturn(expected);
+        when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(category));
+        when(categoryMapper.toDto(category)).thenReturn(expected);
 
         CategoryResponseDto actual = categoryService.getById(categoryId);
 
@@ -61,7 +62,7 @@ public class CategoryServiceTest {
     void getCategory_WithNonExistId_EntityNotFoundException() {
         Long categoryId = 1L;
 
-        Mockito.when(categoryRepository.findById(categoryId))
+        when(categoryRepository.findById(categoryId))
                 .thenThrow(new EntityNotFoundException("Can't find category with id: " + categoryId));
         Exception exception = Assertions.assertThrows(
                 EntityNotFoundException.class,
@@ -91,8 +92,8 @@ public class CategoryServiceTest {
                 requestDto.getDescription()
         );
 
-        Mockito.when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(category));
-        Mockito.when(categoryMapper.toDto(category)).thenReturn(expected);
+        when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(category));
+        when(categoryMapper.toDto(category)).thenReturn(expected);
 
         CategoryResponseDto actual = categoryService.update(categoryId, requestDto);
         assertNotNull(actual);
@@ -107,9 +108,9 @@ public class CategoryServiceTest {
         Category category = testUtil.initCategory(null);
         CategoryResponseDto expected = testUtil.initCategoryResponse(categoryId);
 
-        Mockito.when(categoryMapper.toEntity(categoryDto)).thenReturn(category);
-        Mockito.when(categoryRepository.save(category)).thenReturn(category);
-        Mockito.when(categoryMapper.toDto(category)).thenReturn(expected);
+        when(categoryMapper.toEntity(categoryDto)).thenReturn(category);
+        when(categoryRepository.save(category)).thenReturn(category);
+        when(categoryMapper.toDto(category)).thenReturn(expected);
 
         CategoryResponseDto actual = categoryService.save(categoryDto);
 
@@ -129,10 +130,10 @@ public class CategoryServiceTest {
         CategoryResponseDto dtoThree = testUtil.initCategoryResponse(3L);
         List<CategoryResponseDto> expected = List.of(dtoOne, dtoTwo, dtoThree);
 
-        Mockito.when(categoryRepository.findAll()).thenReturn(categories);
-        Mockito.when(categoryMapper.toDto(categoryOne)).thenReturn(dtoOne);
-        Mockito.when(categoryMapper.toDto(categoryTwo)).thenReturn(dtoTwo);
-        Mockito.when(categoryMapper.toDto(categoryThree)).thenReturn(dtoThree);
+        when(categoryRepository.findAll()).thenReturn(categories);
+        when(categoryMapper.toDto(categoryOne)).thenReturn(dtoOne);
+        when(categoryMapper.toDto(categoryTwo)).thenReturn(dtoTwo);
+        when(categoryMapper.toDto(categoryThree)).thenReturn(dtoThree);
         List<CategoryResponseDto> actual = categoryService.findAll();
 
         assertNotNull(actual);

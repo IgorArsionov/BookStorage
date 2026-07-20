@@ -27,7 +27,6 @@ public class TestUtil {
         return book;
     }
 
-    //
     public BookResponseDto initBookResponseDtoWhereAuthorTaras() {
         BookResponseDto book = new BookResponseDto();
         book.setAuthor("Taras Shevchenko");
