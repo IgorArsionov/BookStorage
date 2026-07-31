@@ -1,0 +1,156 @@
+{
+  "info": {
+    "_postman_id": "cbd7b2aa-9ce9-4cab-b9e8-500eaa0038bf",
+    "name": "Book Storage API",
+    "description": "Requests for the Book Storage REST API. Run Login to store the JWT automatically.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "token", "value": "" },
+    { "key": "bookId", "value": "1" },
+    { "key": "categoryId", "value": "1" },
+    { "key": "cartItemId", "value": "1" },
+    { "key": "orderId", "value": "1" },
+    { "key": "orderItemId", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register",
+          "auth": { "type": "noauth" },
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\",\n  \"confirmPassword\": \"password123\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"shippingAddress\": \"1 Main Street\"\n}" },
+            "url": "{{baseUrl}}/auth/register"
+          }
+        },
+        {
+          "name": "Login",
+          "auth": { "type": "noauth" },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": ["const response = pm.response.json();", "if (response.token) {", "    pm.collectionVariables.set('token', response.token);", "}"] }
+          }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\"\n}" },
+            "url": "{{baseUrl}}/auth/login"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Books",
+      "item": [
+        { "name": "Get All Books", "request": { "method": "GET", "url": "{{baseUrl}}/books?page=0&size=20" } },
+        { "name": "Get Book by ID", "request": { "method": "GET", "url": "{{baseUrl}}/books/{{bookId}}" } },
+        {
+          "name": "Create Book (ADMIN)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Clean Code\",\n  \"author\": \"Robert C. Martin\",\n  \"isbn\": \"9780132350884\",\n  \"price\": 39.99,\n  \"description\": \"A handbook of agile software craftsmanship\",\n  \"coverImage\": \"https://example.com/clean-code.jpg\",\n  \"categoryIds\": [{{categoryId}}]\n}" },
+            "url": "{{baseUrl}}/books"
+          }
+        },
+        {
+          "name": "Update Book (ADMIN)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Clean Code (Updated)\",\n  \"author\": \"Robert C. Martin\",\n  \"isbn\": \"9780132350884\",\n  \"price\": 44.99,\n  \"description\": \"Updated description\",\n  \"coverImage\": \"https://example.com/clean-code.jpg\",\n  \"categoryIds\": [{{categoryId}}]\n}" },
+            "url": "{{baseUrl}}/books/{{bookId}}"
+          }
+        },
+        { "name": "Delete Book (ADMIN)", "request": { "method": "DELETE", "url": "{{baseUrl}}/books/{{bookId}}" } }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        { "name": "Get All Categories", "request": { "method": "GET", "url": "{{baseUrl}}/categories" } },
+        { "name": "Get Category by ID", "request": { "method": "GET", "url": "{{baseUrl}}/categories/{{categoryId}}" } },
+        { "name": "Get Books by Category", "request": { "method": "GET", "url": "{{baseUrl}}/categories/{{categoryId}}/books" } },
+        {
+          "name": "Create Category (ADMIN)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Programming\",\n  \"description\": \"Software development books\"\n}" },
+            "url": "{{baseUrl}}/categories"
+          }
+        },
+        {
+          "name": "Update Category (ADMIN)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Software Engineering\",\n  \"description\": \"Updated category\"\n}" },
+            "url": "{{baseUrl}}/categories/{{categoryId}}"
+          }
+        },
+        { "name": "Delete Category (ADMIN)", "request": { "method": "DELETE", "url": "{{baseUrl}}/categories/{{categoryId}}" } }
+      ]
+    },
+    {
+      "name": "Shopping Cart",
+      "item": [
+        { "name": "Get Shopping Cart", "request": { "method": "GET", "url": "{{baseUrl}}/cart" } },
+        {
+          "name": "Add Book to Cart",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"bookId\": {{bookId}},\n  \"quantity\": 1\n}" },
+            "url": "{{baseUrl}}/cart"
+          }
+        },
+        {
+          "name": "Update Cart Item",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"bookId\": {{bookId}},\n  \"quantity\": 2\n}" },
+            "url": "{{baseUrl}}/cart/items/{{cartItemId}}"
+          }
+        },
+        { "name": "Delete Cart Item", "request": { "method": "DELETE", "url": "{{baseUrl}}/cart/items/{{cartItemId}}" } }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "Create Order",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"shippingAddress\": \"1 Main Street\"\n}" },
+            "url": "{{baseUrl}}/orders"
+          }
+        },
+        { "name": "Get Orders", "request": { "method": "GET", "url": "{{baseUrl}}/orders?page=0&size=20" } },
+        {
+          "name": "Update Order Status (ADMIN)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"COMPLETED\"\n}" },
+            "url": "{{baseUrl}}/orders/{{orderId}}"
+          }
+        },
+        { "name": "Get Order Items", "request": { "method": "GET", "url": "{{baseUrl}}/orders/{{orderId}}/items?page=0&size=20" } },
+        { "name": "Get Order Item", "request": { "method": "GET", "url": "{{baseUrl}}/orders/{{orderId}}/items/{{orderItemId}}" } }
+      ]
+    }
+  ]
+}
